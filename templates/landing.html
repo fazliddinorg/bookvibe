@@ -1,9 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Landing Page</h1>
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <div class="bg-white shadow-lg rounded-2xl p-8 text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">📚 Welcome to <span class="text-indigo-600">BookVibe</span></h1>
 
-    <p>
-    BookVibe is an Uzbek Book reviewing platform
-    </p>
+        <p class="text-lg text-gray-600 mb-6">
+            BookVibe is an <strong>Uzbek book reviewing platform</strong> where readers can explore, rate, and review books in their native language. Discover hidden gems, write reviews, and connect with fellow book lovers!
+        </p>
+
+        <a href="{% url 'books:book-list' %}" class="inline-block mt-4 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+            Browse Books →
+        </a>
+    </div>
+
+    <div class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">🔥 Popular Features</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-gray-600">
+            <li>✅ Write & read honest reviews</li>
+            <li>✅ Explore top-rated books in Uzbek</li>
+            <li>✅ Contribute your opinions & engage in discussions</li>
+            <li>✅ Clean, simple design with a focus on content</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
+
