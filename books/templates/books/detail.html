@@ -1,67 +1,76 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Book Detail Page{% endblock %}
+{% block title %}{{ book.title }} | Book Detail{% endblock %}
 
 {% block content %}
-    <div class="row mb-4">
-        <div class="col-2">
-            <img class="cover-pic" alt="cover image" src="{{ book.cover_picture.url }}">
+<div class="container my-4">
+
+    <!-- Book Info -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <img class="img-fluid rounded shadow" alt="cover image" src="{{ book.cover_picture.url|default_if_none:'#' }}">
         </div>
 
-        <div class="col-6 ms-3">
-            <h3>{{ book.title }}</h3>
-
-            <span class="fst-italic">
-                Authored by
+        <div class="col-md-8">
+            <h2 class="fw-bold">{{ book.title }}</h2>
+            <p class="fst-italic text-muted mb-2">
+                By
                 {% for book_author in book.bookauthor_set.all %}
-                    {% if forloop.last %}
-                        {{ book_author.author.full_name }}
-                    {% else %}
-                        {{ book_author.author.full_name }},
-                    {% endif %}
+                    {{ book_author.author.full_name }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
-            </span>
-
-            <p>
-                {{ book.description }}
             </p>
+            <p class="text-muted">{{ book.description }}</p>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-6">
+    <!-- Review Form -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h4 class="mb-3">Leave a Review</h4>
             <form method="post" action="{% url 'books:reviews' book.id %}">
                 {% csrf_token %}
-
-                {{ review_form | crispy }}
-
-                <button class="btn btn-success">Add review</button>
+                {{ review_form|crispy }}
+                <button class="btn btn-success mt-2">Submit Review</button>
             </form>
-
         </div>
     </div>
 
+    <!-- Reviews -->
     {% if book.bookreview_set.exists %}
-        <h4>Reviews</h4> <hr>
+        <h4 class="mb-3">User Reviews</h4>
+        <hr class="mb-4">
 
         {% for review in book.bookreview_set.all %}
-            <div class="row mb-3">
-                <div class="col-1 me-2">
-                    <img class="small-profile-pic" src="{{ review.user.profile_picture.url }}">
+            <div class="row mb-4 p-3 bg-light rounded shadow-sm">
+                <div class="col-auto">
+                    <img src="{{ review.user.profile_picture.url|default:'#' }}" alt="profile" class="rounded-circle" width="50" height="50">
                 </div>
-                <div class="col-7">
-                    <b>{{ review.user.username }}</b> rated it {{ review.stars_given }} stars  <span class="fw-lighter">{{ review.created_at }}</span>
-                    {% if review.user == request.user %}
-                        <a href="{% url 'books:edit-review' book.id review.id %}"><i class="bi bi-pen"></i></a>
-                        <a href="{% url 'books:confirm-delete-review' book.id review.id %}"><i class="bi bi-trash"></i></a>
-                    {% endif %}
-                    <p class="mt-2 font-monospace">{{ review.comment }}</p>
 
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>{{ review.user.username }}</strong>
+                            <span class="text-muted ms-2">
+                                {% for _ in "12345"|slice:":review.stars_given"|make_list %}⭐{% endfor %}
+                            </span>
+                        </div>
+
+                        <div class="text-muted small">
+                            {{ review.created_at|date:"F j, Y" }}
+                            {% if review.user == request.user %}
+                                <a href="{% url 'books:edit-review' book.id review.id %}" class="ms-2 text-primary"><i class="bi bi-pen"></i></a>
+                                <a href="{% url 'books:confirm-delete-review' book.id review.id %}" class="ms-2 text-danger"><i class="bi bi-trash"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p class="mt-2 text-break">{{ review.comment }}</p>
                 </div>
             </div>
-
         {% endfor %}
+    {% else %}
+        <p class="text-muted">No reviews yet. Be the first to write one!</p>
     {% endif %}
 
+</div>
 {% endblock %}
