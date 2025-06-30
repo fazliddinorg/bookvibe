@@ -1,25 +1,14 @@
 from django.contrib import admin
-from books.models import Book, Author, BookAuthor, BookReview
+from .models import Book, Author, BookAuthor, BookReview
 
-
+@admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    search_fields = ('title', 'isbn')
-    list_display = ('title', 'isbn', 'description')
+    list_display = ('title', 'published_year', 'average_rating', 'created_at', 'updated_at')
+    readonly_fields = ('average_rating',)
 
-
+@admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('full_name', 'email', 'created_at', 'updated_at')
 
-
-class BookAuthorAdmin(admin.ModelAdmin):
-    pass
-
-
-class BookReviewAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(Book, BookAdmin)
-admin.site.register(Author, AuthorAdmin)
-admin.site.register(BookAuthor, BookAuthorAdmin)
-admin.site.register(BookReview, BookReviewAdmin)
+admin.site.register(BookAuthor)
+admin.site.register(BookReview)

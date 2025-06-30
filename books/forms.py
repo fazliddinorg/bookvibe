@@ -1,11 +1,12 @@
 from django import forms
+from .models import Book, Author
 
-from books.models import BookReview
-
-
-class BookReviewForm(forms.ModelForm):
-    stars_given = forms.IntegerField(min_value=1, max_value=5)
-
+class BookForm(forms.ModelForm):
     class Meta:
-        model = BookReview
-        fields = ('stars_given', 'comment')
+        model = Book
+        fields = ['title', 'description', 'isbn', 'cover_picture', 'published_year']
+
+class AuthorForm(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = ['first_name', 'last_name', 'email', 'bio', 'profile_picture']
