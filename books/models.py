@@ -10,9 +10,23 @@ class Book(models.Model):
     description = models.TextField(blank=True)
     isbn = models.CharField(max_length=17)
     cover_picture = models.ImageField(default="default_cover.jpg")
+    published_year = models.PositiveIntegerField(
+        blank=True, null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(timezone.now().year)],
+        help_text="Year the book was published"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
+
+    @property
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if not reviews:
+            return None
+        return round(sum(r.stars_given for r in reviews) / reviews.count(), 2)
 
     class Meta:
         verbose_name = "Book"
@@ -24,6 +38,11 @@ class Author(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
     bio = models.TextField(blank=True)
+    profile_picture = models.ImageField(
+        upload_to='author_pics/', blank=True, null=True, default='default_author.jpg'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -65,4 +84,3 @@ class BookReview(models.Model):
         ordering = ['-created_at']
         verbose_name = "Book Review"
         verbose_name_plural = "Book Reviews"
-
