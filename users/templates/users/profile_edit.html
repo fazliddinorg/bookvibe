@@ -2,20 +2,37 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h3>Edit Profile</h3>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title mb-4">Edit Profile</h3>
 
-    <div class="row">
-        <div class="col-4">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                {{ form | crispy }}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
 
-                <button class="btn btn-primary">save changes</button>
-            </form>
+            {{ form|crispy }}
+
+            {% if form.profile_picture.value %}
+              <div class="mb-3">
+                <label class="form-label">Current Profile Picture:</label><br>
+                <img src="{{ form.profile_picture.value.url }}" alt="Profile Picture"
+                     class="img-thumbnail" style="max-width: 150px;">
+              </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+          </form>
         </div>
-
+      </div>
     </div>
-
-
+  </div>
+</div>
 {% endblock %}
