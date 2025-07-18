@@ -5,7 +5,6 @@ from django.dispatch import receiver
 from users.models import CustomUser
 from users.tasks import send_email
 
-
 @receiver(post_save, sender=CustomUser)
 def send_welcome_email(sender, instance, created, **kwargs):
     if created:
